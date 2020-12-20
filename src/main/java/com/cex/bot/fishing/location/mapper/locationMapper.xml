@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cex.bot.fishing.location.mapper.LocationMapper">
+    <select id="selectLocation" parameterType="long" resultType="com.cex.bot.fishing.location.model.Location">
+        SELECT id AS locationId
+             , name AS locationName
+             , discord_id AS discordId
+             , delay AS delay
+             , remark AS remark
+             , level AS level
+          FROM locations
+         WHERE discord_id = #{discordId}
+    </select>
+
+    <select id="selectLocationFishListByRarity" parameterType="map" resultType="com.cex.bot.fishing.objectItem.model.Fishes">
+        SELECT fish.id  AS id
+             , fish.name AS name
+             , fish.rarity AS rarity
+             , fish.length AS defaultLength
+             , fish.price AS defaultPrice
+             , fish.is_fish AS fish
+             , fish.remark AS remark
+             , fish.file_name AS fileName
+          FROM fishes fish
+    INNER JOIN locations_fishes locationFish
+            ON locationFish.fish_id = fish.id
+         WHERE fish.rarity = #{rarity}
+           AND location_id = #{locationId};
+    </select>
+
+    <select id="selectLocationList" resultType="com.cex.bot.fishing.location.model.Location">
+        SELECT id AS locationId
+             , name AS locationName
+             , discord_id AS discordId
+             , remark AS remark
+             , delay AS delay
+             , level AS level
+          FROM locations
+         ORDER BY level
+    </select>
+
+    <select id="selectLocationFishList" parameterType="long" resultType="com.cex.bot.fishing.objectItem.model.Fishes">
+        SELECT fish.id  AS id
+             , fish.name AS name
+             , fish.rarity AS rarity
+             , fish.length AS defaultLength
+             , fish.price AS defaultPrice
+             , fish.is_fish AS fish
+             , fish.remark AS remark
+          FROM fishes fish
+    INNER JOIN locations_fishes locationFish
+            ON locationFish.fish_id = fish.id
+         WHERE location_id = #{locationId}
+         ORDER BY price DESC
+    </select>
+
+</mapper>

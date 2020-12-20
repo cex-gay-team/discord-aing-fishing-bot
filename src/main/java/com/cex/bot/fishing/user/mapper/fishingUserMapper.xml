@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cex.bot.fishing.user.mapper.FishingUserMapper">
+    <select id="selectUserStatus" parameterType="long" resultType="com.cex.bot.fishing.user.model.FishingUser">
+        SELECT id AS userId
+             , status AS userStatus
+             , discord_id AS discordId
+             , coin AS coin
+          FROM users
+         WHERE discord_id = #{discordId}
+    </select>
+
+    <insert id="insertUser" parameterType="com.cex.bot.fishing.user.model.FishingUser" useGeneratedKeys="true" keyColumn="id" keyProperty="userId">
+        INSERT INTO users (
+          name
+        , coin
+        , rod_id
+        , bait_id
+        , status
+        , discord_id
+        )
+        VALUES (
+          #{userName}
+        , #{coin}
+        , #{rodId}
+        , #{baitsId}
+        , #{userStatus}
+        , #{discordId}
+        )
+    </insert>
+
+    <update id="updateUserStatus" parameterType="com.cex.bot.fishing.user.model.FishingUser">
+        UPDATE users
+           SET status = #{userStatus}
+         WHERE id = #{userId}
+    </update>
+
+    <select id="selectFishingUser" parameterType="long" resultType="com.cex.bot.fishing.user.model.FishingUser">
+     SELECT id AS userId
+          , name AS userName
+          , status AS userStatus
+          , discord_id AS discordId
+          , coin AS coin
+          , rod_id AS rodId
+          , bait_id AS baitsId
+       FROM users users
+      WHERE discord_id = #{discordId}
+    </select>
+
+    <update id="updateUserCoin" parameterType="com.cex.bot.fishing.user.model.FishingUser">
+        UPDATE users
+           SET coin = #{coin}
+         WHERE id = #{userId}
+    </update>
+
+    <update id="updateUserItem" parameterType="com.cex.bot.fishing.user.model.FishingUser">
+        UPDATE users
+           SET rod_id = #{rodId}
+             , bait_id = #{baitsId}
+         WHERE id = #{userId}
+    </update>
+
+    <select id="selectIsAttendanceToday" parameterType="com.cex.bot.fishing.user.model.FishingUser" resultType="boolean">
+        SELECT CASE DATE_FORMAT(attendance_date,'%y%m%d')
+                 WHEN DATE_FORMAT(NOW(),'%y%m%d') THEN 1
+                 ELSE 0
+               END
+         FROM users
+        WHERE id = #{userId}
+    </select>
+
+    <update id="updateUserAttendanceDate" parameterType="com.cex.bot.fishing.user.model.FishingUser">
+        UPDATE users
+           SET attendance_date = NOW()
+         WHERE id = #{userId}
+    </update>
+</mapper>

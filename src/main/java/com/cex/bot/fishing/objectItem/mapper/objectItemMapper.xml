@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cex.bot.fishing.objectItem.mapper.ObjectItemMapper">
+    <select id="selectMyBatisInfo" parameterType="com.cex.bot.fishing.user.model.FishingUser" resultType="com.cex.bot.fishing.objectItem.model.Baits">
+        SELECT baits.id AS id
+             , inven.id AS inventoryId
+             , baits.name AS name
+             , baits.effect AS effect
+             , baits.remark AS remark
+             , baits.price AS price
+             , inven.count AS count
+          FROM baits baits
+    INNER JOIN users_object inven
+            ON inven.object_id = baits.id
+         WHERE inven.user_id = #{userId}
+           AND baits.id = #{baitsId}
+           AND inven.seq = 2
+           AND inven.object_type = 'B'
+    </select>
+
+    <select id="selectMyRodsInfo" parameterType="com.cex.bot.fishing.user.model.FishingUser" resultType="com.cex.bot.fishing.objectItem.model.Rods">
+        SELECT rod.id AS id
+             , rod.name AS name
+             , rod.effect AS effect
+             , rod.weightLimit AS weightLimit
+             , rod.price AS price
+             , rod.remark AS remark
+          FROM rods rod
+    INNER JOIN users_object inven
+            ON inven.object_id = rod.id
+         WHERE user_id = #{userId}
+           AND rod.id = #{rodId}
+           AND inven.seq = 1
+           AND inven.object_type = 'R'
+    </select>
+
+    <insert id="insertInventory" parameterType="com.cex.bot.fishing.user.model.InventoryItem">
+        INSERT INTO users_object(
+          user_id
+        , object_id
+        , object_type
+        , seq
+        , length
+        , price
+        , count
+        )
+        VALUES
+        (
+          #{fishUserId}
+        , #{objectId}
+        , #{objectType}
+        , #{inventoryNo}
+        , #{objectLength}
+        , #{objectPrice}
+        , #{count}
+        )
+    </insert>
+
+    <select id="selectMyInventoryItemList" parameterType="int" resultType="com.cex.bot.fishing.user.model.InventoryItem">
+        SELECT inven.id AS inventoryId
+             , inven.user_id AS fishUserId
+             , (
+                CASE inven.object_type
+                  WHEN 'R' then rod.name
+                  WHEN 'F' then fish.name
+                  WHEN 'B' then bait.name
+                  ELSE ''
+                END
+               ) AS objectName
+             , inven.object_id AS objectId
+             , inven.object_type AS objectType
+             , inven.seq AS inventoryNo
+             , inven.length AS objectLength
+             , inven.price AS objectPrice
+             , inven.count AS count
+          FROM users_object inven
+         LEFT OUTER JOIN rods rod
+            ON inven.object_id = rod.id
+           AND inven.object_type = 'R'
+        LEFT OUTER JOIN fishes fish
+            ON inven.object_id = fish.id
+           AND inven.object_type = 'F'
+        LEFT OUTER JOIN baits bait
+            ON inven.object_id = bait.id
+           AND inven.object_type = 'B'
+         WHERE inven.user_id = #{fishUserId}
+         ORDER BY seq;
+    </select>
+
+    <update id="updateDecreaseBaitsItem" parameterType="com.cex.bot.fishing.objectItem.model.Baits">
+        UPDATE users_object
+           SET count = count - 1
+         WHERE id = #{inventoryId}
+    </update>
+
+    <select id="selectBatisInfoList" resultType="com.cex.bot.fishing.objectItem.model.Baits">
+        SELECT baits.id AS id
+             , baits.name AS name
+             , baits.effect AS effect
+             , baits.remark AS remark
+             , baits.price AS price
+          FROM baits baits
+         ORDER BY price
+    </select>
+
+    <select id="selectBatisInfo" parameterType="int" resultType="com.cex.bot.fishing.objectItem.model.Baits">
+        SELECT baits.id AS id
+             , baits.name AS name
+             , baits.effect AS effect
+             , baits.remark AS remark
+             , baits.price AS price
+          FROM baits baits
+         WHERE baits.id = #{itemNo}
+    </select>
+
+    <delete id="deleteBaitsItem" parameterType="com.cex.bot.fishing.objectItem.model.Baits">
+        DELETE FROM users_object
+        WHERE id = #{inventoryId}
+    </delete>
+
+    <select id="selectRodsInfoList" resultType="com.cex.bot.fishing.objectItem.model.Rods">
+        SELECT rod.id AS id
+             , rod.name AS name
+             , rod.effect AS effect
+             , rod.weightLimit AS weightLimit
+             , rod.price AS price
+             , rod.remark AS remark
+          FROM rods rod
+         ORDER BY price
+    </select>
+
+    <select id="selectRodsInfo" parameterType="int" resultType="com.cex.bot.fishing.objectItem.model.Rods">
+        SELECT rod.id AS id
+             , rod.name AS name
+             , rod.effect AS effect
+             , rod.weightLimit AS weightLimit
+             , rod.price AS price
+             , rod.remark AS remark
+          FROM rods rod
+         WHERE id = #{itemNo}
+    </select>
+
+    <update id="updateInventoryItemNo" parameterType="com.cex.bot.fishing.user.model.InventoryItem">
+        UPDATE users_object
+           SET seq = #{inventoryNo}
+         WHERE id = #{inventoryId}
+    </update>
+
+    <delete id="deleteInventoryItem" parameterType="com.cex.bot.fishing.user.model.InventoryItem">
+        DELETE FROM users_object
+         WHERE id = #{inventoryId}
+           AND user_id = #{fishUserId}
+    </delete>
+
+    <select id="selectMyInventoryItemCount" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+          FROM users_object
+         WHERE user_id = #{userId}
+    </select>
+</mapper>
