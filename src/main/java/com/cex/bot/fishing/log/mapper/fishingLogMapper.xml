@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cex.bot.fishing.log.mapper.FishingLogMapper">
+    <insert id="insertCommandLog" parameterType="com.cex.bot.fishing.log.model.CommandLog" >
+        INSERT INTO log_cmd
+        (
+          user_id
+        , cmd
+        , param
+        )
+        VALUES
+        (
+          #{userId}
+        , #{command}
+        , #{parameter}
+        )
+    </insert>
+
+    <insert id="insertFishingLog" parameterType="com.cex.bot.fishing.log.model.FishingLog" >
+        INSERT INTO log_fishing
+        (
+          user_id
+        , fish_id
+        , length
+        , price
+        , location_id
+        , rod_id
+        , bait_id
+        )
+        VALUES
+        (
+          #{fishingUserId}
+        , #{fishId}
+        , #{length}
+        , #{price}
+        , #{locationId}
+        , #{rodId}
+        , #{baitId}
+        )
+    </insert>
+</mapper>

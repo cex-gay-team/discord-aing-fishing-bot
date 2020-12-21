@@ -156,6 +156,13 @@
             <artifactId>spring-context-support</artifactId>
             <version>${spring-webmvc-version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.4.5</version>
+        </dependency>
+
     </dependencies>
     <repositories>
         <repository>

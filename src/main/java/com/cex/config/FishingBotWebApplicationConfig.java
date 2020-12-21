@@ -48,15 +48,6 @@ public class FishingBotWebApplicationConfig implements WebApplicationInitializer
         FilterRegistration.Dynamic filter = servletContext.addFilter("encodingFilter", CharacterEncodingFilter.class);
         filter.setInitParameter("encoding", "UTF-8");
         filter.addMappingForServletNames(null, false, "dispatcher");
-//TODO 나중에 지울거임. 일단 접속정보들 암호화 하는데 로컬에서 돌려서 넣을려고함
-// tc 짜서 암호화 해도 되는데 귀찮아서 여기에 구현해둠.
-//        try {
-//            decruptTest("");
-//
-//
-//        } catch (Exception exception) {
-//            exception.printStackTrace();
-//        }
     }
 
     private void decruptTest(String data) throws Exception {

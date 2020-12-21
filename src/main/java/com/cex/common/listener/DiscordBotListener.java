@@ -2,6 +2,7 @@ package com.cex.common.listener;
 
 import com.cex.bot.fishing.location.bo.LocationBo;
 import com.cex.bot.fishing.location.model.Location;
+import com.cex.bot.fishing.log.bo.FishingLogBo;
 import com.cex.bot.fishing.user.bo.FishingUserBo;
 import com.cex.bot.fishing.command.DiscordBaseCommand;
 import com.cex.bot.fishing.user.model.FishingUser;
@@ -38,6 +39,8 @@ public class DiscordBotListener extends ListenerAdapter {
     @Autowired
     private LocationBo locationBo;
 
+    @Autowired
+    private FishingLogBo fishingLogBo;
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
@@ -63,6 +66,7 @@ public class DiscordBotListener extends ListenerAdapter {
                 event.getTextChannel().sendMessage(event.getAuthor().getAsMention() + "님. 현재 낚시중 상태이십니다. 낚시 완료 후 요청해주세요.").queue();
             }
 
+            fishingLogBo.addCommandLog(fishingUser, event.getMessage().getContentRaw());
         }
     }
 

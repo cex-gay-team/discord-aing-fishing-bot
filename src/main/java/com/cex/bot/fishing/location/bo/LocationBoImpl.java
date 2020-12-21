@@ -25,14 +25,14 @@ public class LocationBoImpl implements LocationBo{
     }
 
     @Override
-    @Cacheable("commonCache")
+//    @Cacheable("commonCache")
     public List<Location> getLocationList() {
 
         return locationMapper.selectLocationList();
     }
 
     @Override
-    @Cacheable("commonCache")
+//    @Cacheable("commonCache")
     public List<Fishes> getLocationFishList(long locationId) {
         return locationMapper.selectLocationFishList(locationId);
     }

@@ -1,6 +1,7 @@
 package com.cex.bot.fishing.location.bo;
 
 import com.cex.bot.fishing.location.model.Location;
+import com.cex.bot.fishing.log.bo.FishingLogBo;
 import com.cex.bot.fishing.objectItem.bo.ObjectItemBo;
 import com.cex.bot.fishing.objectItem.model.*;
 import com.cex.bot.fishing.user.bo.FishingUserBo;
@@ -34,6 +35,9 @@ public class FishingAsyncExecutor {
 
     @Autowired
     private LocationBo locationBo;
+
+    @Autowired
+    private FishingLogBo fishingLogBo;
 
     @Async("fishingExecutor")
     @Transactional
@@ -83,6 +87,7 @@ public class FishingAsyncExecutor {
                             .count(1)
                             .build();
                     objectItemBo.saveItem(inventoryItem);
+                    fishingLogBo.addFishingResultLog(fishingUser, inventoryItem, location);
                     discordSendUtil.sendMessage(fishingUser.getUserName() + "님; 낚시 결과 알려드려유;" + fishes.getName() + "(" +  fishes.getRarity() + ") 을(를) 잡았어요!", locationId);
                     discordSendUtil.sendFile(fishes.getFileName(), locationId);
                 } else {

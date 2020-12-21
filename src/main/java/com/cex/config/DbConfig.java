@@ -2,7 +2,7 @@ package com.cex.config;
 
 import com.cex.common.security.dataCryptor.DataCryptor;
 import com.cex.common.security.dataCryptor.MysqlDataCryptorImpl;
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -39,12 +39,17 @@ public class DbConfig {
     @Bean
     public DataSource dataSource() {
         DataCryptor dataCryptor = mysqlDataCryptor();
-        BasicDataSource dataSource = new BasicDataSource();
+        HikariDataSource dataSource = new HikariDataSource();
+
         dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
-        dataSource.setUrl(dataCryptor.decryptData(url));
+
+
+        dataSource.setJdbcUrl(dataCryptor.decryptData(url));
         dataSource.setUsername(dataCryptor.decryptData(user));
         dataSource.setPassword(dataCryptor.decryptData(password));
-        dataSource.setDefaultAutoCommit(false);
+        dataSource.setMinimumIdle(5);
+        dataSource.setConnectionTestQuery("SELECT 1");
+        dataSource.setMaximumPoolSize(20);
 
         return dataSource;
     }
