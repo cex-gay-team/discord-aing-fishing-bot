@@ -22,7 +22,7 @@ public class FishingLogBoImpl implements FishingLogBo {
         CommandLog commandLog = CommandLog.builder()
                 .userId(fishingUser.getUserId())
                 .command(DiscordUtil.getInstance().getCommand(content).toLowerCase())
-                .parameter(Arrays.stream(DiscordUtil.getInstance().parsingParam(content)).reduce(String::concat).orElse(""))
+                .parameter(Arrays.stream(DiscordUtil.getInstance().parsingParam(content)).reduce((concatParam, nextParam) -> concatParam.concat(" " + nextParam)).orElse(""))
                 .build();
         fishingLogMapper.insertCommandLog(commandLog);
     }
